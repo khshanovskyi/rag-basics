@@ -40,7 +40,7 @@ public class TextProcessor {
         this.dbPassword = dbPassword;
     }
 
-    private Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
@@ -65,14 +65,14 @@ public class TextProcessor {
         throw new RuntimeException("Not implemented");
     }
 
-    private String getContent(String fileName) throws IOException {
+    protected String getContent(String fileName) throws IOException {
         ClassLoader classLoader = TextProcessor.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         String filePath = resource.getPath();
         return Files.readString(Path.of(filePath));
     }
 
-    private void process(String documentName, String chunk) {
+    protected void process(String documentName, String chunk) {
         //todo: 1. Get embeddings for the chunk using `embeddingsClient.getEmbeddings(chunk)`
         //todo: 2. Extract the embedding vector from the response
         //todo: 3. Save the chunk and its embeddings to the database using `saveChunk(embeddingVector, chunk, documentName)`. (Need to implement*)
@@ -81,7 +81,7 @@ public class TextProcessor {
         throw new RuntimeException("Not implemented");
     }
 
-    private void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
+    protected void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
         //todo: 1. Convert the embedding vector list to a string using `embeddingListToString(embeddingVector)`. (Implemented)
         //todo: 2. Create a database connection
         //todo: 3. Prepare an SQL statement to insert document_name, text, and embedding into items table
@@ -93,7 +93,7 @@ public class TextProcessor {
         throw new RuntimeException("Not implemented");
     }
 
-    public List<String> chunkText(String text, int chunkSize, int overlap) {
+    private List<String> chunkText(String text, int chunkSize, int overlap) {
         List<String> chunks = new ArrayList<>();
 
         if (text == null || text.isEmpty()) {
@@ -122,7 +122,7 @@ public class TextProcessor {
         return chunks;
     }
 
-    private void trunkateTable() throws SQLException {
+    protected void trunkateTable() throws SQLException {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "TRUNCATE TABLE items")) {
@@ -132,7 +132,7 @@ public class TextProcessor {
         }
     }
 
-    private String embeddingListToString(List<Double> embedding) {
+    protected String embeddingListToString(List<Double> embedding) {
         String embeddings = embedding.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
@@ -170,7 +170,7 @@ public class TextProcessor {
         throw new RuntimeException("Not implemented");
     }
 
-    private List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
+    protected List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
         //todo: 1. Validate parameters (topK >= 1, minScore between 0 and 1), otherwise IllegalArgumentException
         //todo: 2. Get embeddings for the user request using `embeddingsClient.getEmbeddings(userRequest)`
         //todo: 3. Extract the embedding vector from the response
@@ -210,7 +210,7 @@ public class TextProcessor {
         - A distance of 0 (identical vectors) becomes a similarity score of 1 (100% similar)
         - A distance of 2 (completely opposite vectors) becomes a similarity score of 0 (0% similar)
     */
-    private String generateSearchQuery(SearchMode searchMode) {
+    protected String generateSearchQuery(SearchMode searchMode) {
         //todo: 1. Implement a switch statement based on the searchMode parameter
         //todo: 2. For SearchMode.SIMILARITY, return SQL query that:
         //todo:    - Selects `tex`t and calculates `similarity_score` using the L2 distance operator (<->)
@@ -226,7 +226,7 @@ public class TextProcessor {
         throw new RuntimeException("Not implemented");
     }
 
-    enum SearchMode {
+    protected enum SearchMode {
         SIMILARITY, // Euclidean distance (<->)
         SEMANTIC, // Cosine distance (<=>)
     }

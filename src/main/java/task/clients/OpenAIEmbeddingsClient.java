@@ -24,7 +24,7 @@ public class OpenAIEmbeddingsClient {
         this.apiKey = checkApiKey(apiKey);
         this.printResponse = printResponse;
         this.mapper = new ObjectMapper();
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = createHttpClient();
     }
 
     private String checkApiKey(String apiKey) {
@@ -32,6 +32,10 @@ public class OpenAIEmbeddingsClient {
             throw new IllegalArgumentException("apiKey cannot be null or empty");
         }
         return apiKey;
+    }
+
+    protected HttpClient createHttpClient() {
+        return HttpClient.newHttpClient();
     }
 
     public EmbeddingsResponseDto getEmbeddings(String input) throws Exception {
@@ -45,7 +49,7 @@ public class OpenAIEmbeddingsClient {
         throw new RuntimeException("Not implemented");
     }
 
-    private Map<String, Object> generateRequestBody(String input) {
+    protected Map<String, Object> generateRequestBody(String input) {
         //todo: Create and return a Map with parameters:
         //todo:     - "model": the model value from the class field
         //todo:     - "input": the input text parameter
@@ -53,7 +57,7 @@ public class OpenAIEmbeddingsClient {
         throw new RuntimeException("Not implemented");
     }
 
-    private HttpRequest generateRequest(Map<String, Object> requestBody) throws JsonProcessingException {
+    protected HttpRequest generateRequest(Map<String, Object> requestBody) throws JsonProcessingException {
         //todo: Build an HttpRequest that:
         //todo:     - Uses the OpenAI Embeddings API URI from Constants
         //todo:     - Adds Authorization header with the API key in format "Bearer {apiKey}"
