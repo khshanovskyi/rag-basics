@@ -95,7 +95,7 @@ public class ChatApp {
                 userInput = String.format(
                         USER_PROMPT,
                         userInput,
-                        String.join(", ", Objects.requireNonNull(ragContextChunks, "ragContextChunks cannot be null"))
+                        String.join("\n\n", Objects.requireNonNull(ragContextChunks, "ragContextChunks cannot be null"))
                 );
 
 
