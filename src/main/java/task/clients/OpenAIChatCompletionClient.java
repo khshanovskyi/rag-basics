@@ -1,4 +1,4 @@
-package task;
+package task.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,14 +15,17 @@ import java.util.List;
 import java.util.Map;
 
 public class OpenAIChatCompletionClient {
+
     private final ObjectMapper mapper;
     private final HttpClient httpClient;
     private final ChatCompletionModel model;
     private final String apiKey;
+    private final boolean printRequestResponse;
 
-    public OpenAIChatCompletionClient(ChatCompletionModel chatCompletionModel, String apiKey) {
+    public OpenAIChatCompletionClient(ChatCompletionModel chatCompletionModel, String apiKey, boolean printRequestResponse) {
         this.model = chatCompletionModel;
         this.apiKey = checkApiKey(apiKey);
+        this.printRequestResponse = printRequestResponse;
         this.mapper = new ObjectMapper();
         this.httpClient = HttpClient.newHttpClient();
     }
@@ -36,28 +39,20 @@ public class OpenAIChatCompletionClient {
 
     public Message responseWithMessage(List<Message> messages) throws Exception {
         var request = createRequest(messages);
-        System.out.println("REQUEST: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
-        HttpRequest httpRequest = generateRequest(request);
+        if (printRequestResponse) {
+            System.out.println("REQUEST: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(request));
+        }
 
+        HttpRequest httpRequest = generateRequest(request);
         String responseBody = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        System.out.println("RESPONSE: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(responseBody)));
+        if (printRequestResponse) {
+            System.out.println("RESPONSE: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(responseBody)));
+        }
 
         ChatCompletion chatCompletion = mapper.readValue(responseBody, ChatCompletion.class);
         Choice choice = chatCompletion.choices().getFirst();
-        Message message = choice.message();
 
-//        if (choice.finishReason().equals("tool_calls")) {
-//            List<ToolCall> toolCalls = message.getToolCalls();
-//            if (toolCalls != null && !toolCalls.isEmpty()) {
-//                //Add AI message
-//                messages.add(message);
-//
-//                processToolCalls(messages, toolCalls);
-//                return responseWithMessage(messages);
-//            }
-//        }
-
-        return message;
+        return choice.message();
     }
 
     private Map<String, Object> createRequest(List<Message> messages) {

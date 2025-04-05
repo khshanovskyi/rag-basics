@@ -1,8 +1,10 @@
-package task;
+package task.documents;
 
 import task.clients.OpenAIEmbeddingsClient;
 import task.dto.embeddings.EmbeddingsResponseDto;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -13,7 +15,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+/**
+ * A processor for text documents that handles chunking, embedding, storing, and retrieval.
+ *
+ * @see OpenAIEmbeddingsClient
+ * @see EmbeddingsResponseDto
+ */
 public class TextProcessor {
 
     private final OpenAIEmbeddingsClient embeddingsClient;
@@ -35,23 +44,53 @@ public class TextProcessor {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public void processTextFile(String filePath, String documentName, int chunkSize, int overlap) throws Exception {
-        if (chunkSize < 10) throw new IllegalArgumentException("chunkSize must be at least 10");
-        if (overlap < 0) throw new IllegalArgumentException("overlap must be at least 0");
-        if (overlap >= chunkSize) throw new IllegalArgumentException("overlap should be lower than chunkSize");
+    /**
+     * Loads content from file, slices it into chunks, generates embeddings, and persists chunk content with embeddings to DB.
+     *
+     * @param fileName file name with path that should be converted to embeddings and persisted in DB
+     * @param chunkSize chars amount that we need to slice content from file
+     * @param overlap overlap chars amount
+     * @param truncateTable whether we need to clean DB table or not
+     * @param runParallel whether save chunks in parallel or not
+     */
+    public void processTextFile(String fileName, int chunkSize, int overlap, boolean truncateTable, boolean runParallel) throws Exception {
+        //todo: 1. Validate parameters (chunkSize >= 10, overlap >= 0, overlap < chunkSize), otherwise IllegalArgumentException
+        //todo: 2. Read the text content from the file using `getContent(fileName)`. (Implemented)
+        //todo: 3. Split the content into chunks using `chunkText(content, chunkSize, overlap)`. (Implemented)
+        //todo: 4. Log information about processing (document name, total chunks)
+        //todo: 5. Create a stream of chunks (parallel if runParallel is true)
+        //todo: 6. If truncateTable is true, call `truncateTable()` to clear the table. (Implemented)
+        //todo: 7. Process each chunk by calling `process(fileName, chunk)`. (Need to implement*)
 
-        trunkateTable();
+        throw new RuntimeException("Not implemented");
+    }
 
-        String content = Files.readString(Path.of(filePath));
-        List<String> chunks = chunkText(content, chunkSize, overlap);
+    private String getContent(String fileName) throws IOException {
+        ClassLoader classLoader = TextProcessor.class.getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        String filePath = resource.getPath();
+        return Files.readString(Path.of(filePath));
+    }
 
-        System.out.println("Processing document: " + documentName);
-        System.out.println("Total chunks: " + chunks.size());
+    private void process(String documentName, String chunk) {
+        //todo: 1. Get embeddings for the chunk using `embeddingsClient.getEmbeddings(chunk)`
+        //todo: 2. Extract the embedding vector from the response
+        //todo: 3. Save the chunk and its embeddings to the database using `saveChunk(embeddingVector, chunk, documentName)`. (Need to implement*)
+        //todo: 4. Handle any exceptions by wrapping them in RuntimeException
 
-        for (int i = 0; i < chunks.size(); i++) {
-            String chunk = chunks.get(i);
-            embedAndStoreChunk(chunk, documentName, i);
-        }
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
+        //todo: 1. Convert the embedding vector list to a string using `embeddingListToString(embeddingVector)`. (Implemented)
+        //todo: 2. Create a database connection
+        //todo: 3. Prepare an SQL statement to insert document_name, text, and embedding into items table
+        //todo: 4. Set parameters for the prepared statement (documentName, chunk, vectorString)
+        //todo: 5. Execute the update
+        //todo: 6. Print information about the stored chunk
+        //todo: 7. Close the connection and statement properly
+
+        throw new RuntimeException("Not implemented");
     }
 
     public List<String> chunkText(String text, int chunkSize, int overlap) {
@@ -83,23 +122,14 @@ public class TextProcessor {
         return chunks;
     }
 
-    private void embedAndStoreChunk(String chunk, String documentName, int chunkIndex) throws Exception {
-        EmbeddingsResponseDto embeddings = embeddingsClient.getEmbeddings(chunk);
-        List<Double> embeddingVector = embeddings.data().getFirst().embedding();
-
-        String vectorString = embeddingListToString(embeddingVector);
-
+    private void trunkateTable() throws SQLException {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO items (name, description, embedding) VALUES (?, ?, ?::vector)")) {
+                     "TRUNCATE TABLE items")) {
 
-            ps.setString(1, documentName + " - Chunk " + chunkIndex);
-            ps.setString(2, chunk);
-            ps.setString(3, vectorString);
             ps.executeUpdate();
+            System.out.println("Table has been successfully truncated.");
         }
-
-        System.out.println("Stored chunk " + chunkIndex + " for document: " + documentName);
     }
 
     private String embeddingListToString(List<Double> embedding) {
@@ -109,37 +139,96 @@ public class TextProcessor {
         return String.format("[%s]", embeddings);
     }
 
-    private void trunkateTable() throws SQLException {
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "TRUNCATE TABLE items")) {
 
-            ps.executeUpdate();
-        }
+    /**
+     * Makes similarity search of data chunks by user input.
+     *
+     * @param userRequest original user input
+     * @param topK amount of results to return after search
+     * @param minScore [0f - 0.99999999f], filter with similarity score
+     * @return chunks of most suitable data to user input
+     */
+    public List<String> similaritySearch(String userRequest, int topK, float minScore) throws Exception {
+        //todo: 1. Call the search method with SearchMode.SIMILARITY parameter
+        //todo: 2. Return the result of the method `search`. (Need to implement*)
+
+        throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * Makes semantic search of data chunks by user input.
+     *
+     * @param userRequest original user input
+     * @param topK amount of results to return after search
+     * @param minScore [0f - 0.99999999f], filter with similarity score
+     * @return chunks of most suitable data to user input
+     */
+    public List<String> semanticSearch(String userRequest, int topK, float minScore) throws Exception {
+        //todo: 1. Call the search method with SearchMode.SEMANTICS parameter
+        //todo: 2. Return the result of the method `search`. (Need to implement*)
 
-    public List<String> retrieveSimilarChunks(String query, int topK) throws Exception {
-        EmbeddingsResponseDto queryEmbedding = embeddingsClient.getEmbeddings(query);
-        List<Double> embeddingVector = queryEmbedding.data().getFirst().embedding();
-        String vectorString = embeddingListToString(embeddingVector);
-
-        List<String> retrievedChunks = new ArrayList<>();
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT description FROM items ORDER BY embedding <-> ?::vector LIMIT ?")) {
-
-            ps.setString(1, vectorString);
-            ps.setInt(2, topK);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    retrievedChunks.add(rs.getString("description"));
-                }
-            }
-        }
-
-        return retrievedChunks;
+        throw new RuntimeException("Not implemented");
     }
+
+    private List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
+        //todo: 1. Validate parameters (topK >= 1, minScore between 0 and 1), otherwise IllegalArgumentException
+        //todo: 2. Get embeddings for the user request using `embeddingsClient.getEmbeddings(userRequest)`
+        //todo: 3. Extract the embedding vector from the response
+        //todo: 4. Convert the embedding vector to string format using `embeddingListToString(embeddingVector)`. (Implemented)
+        //todo: 5. Initialize a list to store retrieved chunks (results)
+        //todo: 6. Generate the appropriate search query based on searchMode using `generateSearchQuery(searchMode)`. (Need to implement*)
+        //todo: 7. Create a database connection and prepare the SQL statement
+        //todo: 8. Set parameters for the statement (vectorString, vectorString, minScore, topK)
+        //todo: 9. Execute the query and process the results, adding text to retrievedChunks
+        //todo: 10. Log information about the retrieved chunks (optional)
+        //todo: 11. Close the connection and statement properly
+        //todo: 12. Return the list of retrieved chunks
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /*
+    For L2 (Euclidean) distance (`<->`):
+        - The L2 distance measures the straight-line distance between two points in the vector space.
+        - For normalized embeddings (vectors with a length of 1), the maximum possible L2 distance between any two vectors is 2.
+        - A distance of 0 means the vectors are identical (perfect match).
+        - A distance of 2 means the vectors are pointing in exactly opposite directions (worst match).
+
+    For cosine distance (`<=>`):
+        - The cosine distance measures the angular difference between vectors.
+        - For normalized embeddings, the cosine distance also ranges from 0 to 2.
+        - A distance of 0 means the vectors are pointing in the same direction (perfect match).
+        - A distance of 2 means the vectors are pointing in exactly opposite directions (worst match).
+
+    In your query, you're transforming these distance metrics into similarity scores with this formula: similarity_score = 1 - (distance) / 2
+
+    This transformation does two important things:
+        1. It divides the distance by 2, mapping the range from [0,2] to [0,1]
+        2. It subtracts this value from 1, which inverts the scale
+
+    As a result:
+        - A distance of 0 (identical vectors) becomes a similarity score of 1 (100% similar)
+        - A distance of 2 (completely opposite vectors) becomes a similarity score of 0 (0% similar)
+    */
+    private String generateSearchQuery(SearchMode searchMode) {
+        //todo: 1. Implement a switch statement based on the searchMode parameter
+        //todo: 2. For SearchMode.SIMILARITY, return SQL query that:
+        //todo:    - Selects `tex`t and calculates `similarity_score` using the L2 distance operator (<->)
+        //todo:    - Transforms distance to similarity with formula: 1 - (distance) / 2
+        //todo:      (Division by 2 normalizes the score to 0-1 range since L2 distances can be up to 2 for normalized vectors)
+        //todo:    - Filters by minimum similarity score threshold
+        //todo:    - Orders results by similarity score in descending order
+        //todo:    - Limits to the specified number of results
+        //todo: 3. For SearchMode.SEMANTICS, return SQL query that:
+        //todo:    - All the same as query above but use the cosine distance operator (<=>)
+        //todo: 4. Include necessary vector casting (?::vector) in the queries
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    enum SearchMode {
+        SIMILARITY, // Euclidean distance (<->)
+        SEMANTICS, // Cosine distance (<=>)
+    }
+
 }

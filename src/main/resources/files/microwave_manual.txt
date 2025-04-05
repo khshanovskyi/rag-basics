@@ -5,71 +5,10 @@ Microwave Oven
 User Manual
 MODEL: DW 395 HCG
 
-Read This Manual
-
 Inside, you will ﬁnd many helpful hints on how to use and maintain your Microwave Oven properly. Just a little
 preventive care on your part can save you a great deal of time and money over the life of your Microwave Oven.
 
-CONTENT
-Content
-Precautions To Avoid Possible Exposure To Excessive
-Microwave Energy
-Important Safety Instructions
-Installation Guide
-Grounding Instructions
-Radio Interference
-Before Calling For Service
-Cooking Techniques
-Cooking Utensils Guide
-Specifications
-Product Diagram
-Control Panel
-Operation Instructions
-Setting Clock Time
-Microwave Cooking
-Express Cooking
-Grill
-Combination
-Disinfect Function
-Deodorize Function
-Eco Function
-Auto Defrost
-Multi-stage Cooking
-Child Lock
-Auto Cook
-Cleaning And Care
-
-2
-
-1
-2
-2
-2
-5
-5
-6
-6
-7
-7
-8
-8
-9
-10
-10
-10
-11
-11
-11
-11
-12
-12
-12
-12
-13
-13
-14
-
-PRECAUTIONS TO AVOID POSSIBLE EXPOSURE TO
+PRECAUTIONS TO AVOID POSSIBLE EXPOSURE TO
 EXCESSIVE MICROWAVE ENERGY
 1. Do not attempt to operate this oven with the door open since open-door operation
 can result in harmful exposure to microwave energy. It is important not to defeat or
@@ -103,10 +42,7 @@ instructions have been given so that the child is able to use the oven in a safe
 and understands the hazards of improper use.
 6. WARNING - When the appliance is operated in the combination mode, children
 should only use the oven under adult supervision due to the temperatures generated
-
-3
-
-7. To reduce the risk of ﬁre in the oven cavity:
+7. To reduce the risk of ﬁre in the oven cavity:
 When heating food in plastic or paper container, keep an eye on the oven due to the
 possibility of ignition.
 Remove wire twist-ties from paper or plastic bags before placing bag in oven.
@@ -145,9 +81,7 @@ inspection/analysis purposes, or for transfer of electromagnetic energy. Class B
 equipment is the equipment suitable for use in locations in residential environments
 and in establishments directly connected to a low voltage power supply network which
 supplies buildings used for domestic purposes.
-4
-
-18. This appliance is not intended for use by persons (including children) with reduced
+18. This appliance is not intended for use by persons (including children) with reduced
 physical, sensory or mental capabilities, or lack of experience and knowledge, unless
 they have been given supervision or instruction concerning use of the appliance by a
 person responsible for their safety.
@@ -180,10 +114,7 @@ cord or the lighting as well. Send the appliance in these cases to our service c
 34. The microwave oven is intended for defrosting, cooking and steaming of food only.
 35. Use gloves if you remove any heated food.
 36. Caution - Steam will escape, when opening lids or wrapping foil.
-
-5
-
-37. This appliance can be used by children aged 8 years and above and persons
+37. This appliance can be used by children aged 8 years and above and persons
 with reduced physical, sensory or mental capabilities or lack of experience and
 knowledge if they have been given supervision or instruction concerning use of the
 appliance in a safe way and understand the hazards involved. Children shall not play
@@ -214,9 +145,7 @@ or over any hot or sharp surface.
 emergency.
 9. Do not use the oven outdoors.
 
-6
-
-GROUNDING INSTRUCTIONS
+GROUNDING INSTRUCTIONS
 This appliance must be grounded. This oven is equipped with a cord having a grounding
 wire with a grounding plug. It must be plugged into a wall receptacle that is properly
 installed and grounded. In the event of an electrical short circuit, grounding reduces risk of
@@ -252,9 +181,7 @@ Check to ensure the oven is plugged in securely. If not, remove the plug from th
 outlet, wait 10 seconds, and plug it in again securely.
 Check for a blown circuit fuse or a tripped main circuit breaker. If these seem to be
 operating properly, test the outlet with another appliance.
-7
-
-Check to ensure the control panel is programmed correctly and the timer is set.
+Check to ensure the control panel is programmed correctly and the timer is set.
 Check to ensure the door is securely closed, engaging the door lock system. If the
 door is not properly closed, the microwave energy will not ﬂow inside.
 IF NONE OF THE ABOVE RECTIFIES THE SITUATION, THEN CONTACT A QUALIFIED TECHNICIAN. DO NOT TRY TO ADJUST OR REPAIR THE OVEN YOURSELF.
@@ -285,51 +212,19 @@ But be careful, don’t use too much and keep a distance of 1 inch (2.54cm) betw
 foil and cavity.
 The list below is a general guide to help you select the correct utensils.
 
-8
+COOKWARE
+Heat–Resistant Glass: MICROWAVE-Yes; GRILL-Yes
+Non Heat–Resistant Glass: MICROWAVE-No; GRILL-No
+Heat–Resistant Ceramics: MICROWAVE-Yes; GRILL-Yes
+Microwave–Safe Plastic Dish: MICROWAVE-Yes; GRILL-No
+Kitchen Paper: MICROWAVE-Yes; GRILL-No
+Metal Tray: MICROWAVE-No; GRILL-Yes
+Metal Rack: MICROWAVE-No; GRILL-Yes
+Aluminum Foil & Foil Containers: MICROWAVE-No; GRILL-Yes
 
-COOKWARE
-Heat–Resistant Glass
-Non Heat–Resistant Glass
-Heat–Resistant Ceramics
-Microwave–Safe Plastic Dish
-Kitchen Paper
-Metal Tray
-Metal Rack
-Aluminum Foil & Foil Containers
-
-MICROWAVE
-Yes
-No
-Yes
-Yes
-Yes
-No
-No
-No
-
-GRILL
-Yes
-No
-Yes
-No
-No
-Yes
-Yes
-Yes
-
-COMBINATION
-Yes
-No
-Yes
-No
-No
-No
-No
-No
 
 SPECIFICATIONS
-Power Consumption
-
+Power Consumption:
 230V/50Hz, 1400W(Microwave)
 1000W(Grill)
 900W
@@ -359,9 +254,7 @@ plate covering the wave guide)
 8. Grill Heater
 9. Metal Rack
 
-9
-
-CONTROL PANEL
+CONTROL PANEL
 DISPLAY
 Cooking time, power, indicators and clock
 time are displayed.
@@ -389,9 +282,8 @@ Press once to temporarily stop cooking, or
 twice to cancel cooking altogether.
 It is also used to set child lock.
 
-10
 
-OPERATION INSTRUCTIONS
+OPERATION INSTRUCTIONS
 When the oven is plugged in, a beep will sound and the display will show "1:00"
 and "
 "
@@ -447,9 +339,7 @@ Power (Display)
 
 NOTE: You can check the cooking power level during cooking by pressing POWER/CLOCK button.
 
-11
-
-EXPRESS COOKING
+EXPRESS COOKING
 Use this feature to program the oven to microwave food at 100% power conveniently. In
 standby mode, press START/QUICK START button repeatedly to set cooking time (each
 press to increase 30 seconds, and up to 10 minutes), the oven starts working automatically at full power.
@@ -492,9 +382,8 @@ Glove (Rubber/Latex Glove Baby Bottle (Glass & Plastic PP)
 not recommended)
 Hand Towel
 Mittens (Cloth)
-12
 
-ECO FUNCTION
+ECO FUNCTION
 To set:
 1. In standby mode, press DISINFECT/DEODORIZE/ECO once. The display shows the
 disinfection mode 1 code "dIS1". Then turn MENU/TIME dial until the display shows the
@@ -531,9 +420,7 @@ disabled.
 To cancel: Press and hold STOP/CANCEL button for 3 seconds, then a beep will sound
 and the indicator light will disappear.
 
-13
-
-AUTO COOK
+AUTO COOK
 For the following food or cooking mode, it is not necessary to program the cooking time
 and power. It is sufﬁcient to indicate the type of food that you want to cook as well as the
 weight or servings of this food.
@@ -544,29 +431,15 @@ code "1", and then continue to turn the dial to select others food code.
 4. Press START/QUICK START button to start.
 Auto cook menus:
 Code
-1
-2
-3
-4
-5
-6
-7
-8
-9
-
-Food
-Milk/Coffee (200 ml/cup, 1-3
-cups)
-Rice (150-600 g)
-Spaghetti (100 g, 200 g,
-300 g)
-Potato (230 g/serving, 1-3
-servings)
-Auto Reheat (200-800 g)
-Fish (200-600 g)
-Chicken (800-1400 g)
-Beef/Mutton (200-600 g)
-Skewered Meat (100-500 g)
+1 Food
+2 Milk/Coffee (200 ml/cup, 1-3 cups)
+3 Rice (150-600 g)
+4 Spaghetti (100 g, 200 g, 300 g)
+5 Potato (230 g/serving, 1-3 servings)
+6 Auto Reheat (200-800 g)
+7 Chicken (800-1400 g)
+8 Beef/Mutton (200-600 g)
+9 Skewered Meat (100-500 g)
 
 Note
 For items 7~9, during cooking, the system
@@ -594,9 +467,7 @@ the operating parts inside the oven, water should not be allowed to seep into th
 ventilation openings.
 4. Wipe the door and window on both sides, the door seals and adjacent parts frequently
 with a damp cloth to remove any spills or spatters. Do not use abrasive cleaner.
-14
-
-5. A steam cleaner is not be used.
+5. A steam cleaner is not be used.
 6. Do not allow the control panel to become wet. Clean with a soft, damp cloth. When
 cleaning the control panel, leave oven door open to prevent oven from accidentally
 turning on.
@@ -623,7 +494,3 @@ disposed to the particular disposal center provided by the municipalities.
 and smell. This is a normal phenomenon, because the oven is made of a steel plate
 coated with lubricating oil, and the new oven will produce fumes and odor generated
 by burning the lubricating oil. This phenomenon will disappear after a period of using.
-
-15
-
-

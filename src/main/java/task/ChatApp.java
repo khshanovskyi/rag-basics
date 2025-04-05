@@ -1,35 +1,79 @@
 package task;
 
-import task.dto.Message;
-
-import java.util.List;
-import java.util.Map;
-import task.dto.Conversation;
-import task.dto.Model;
-import task.dto.Role;
+import task.clients.OpenAIChatCompletionClient;
+import task.clients.OpenAIEmbeddingsClient;
+import task.documents.TextProcessor;
+import task.dto.chat_completion.Conversation;
+import task.dto.chat_completion.Message;
+import task.dto.chat_completion.ChatCompletionModel;
+import task.dto.chat_completion.Role;
+import task.dto.embeddings.EmbeddingsModel;
 import task.utils.Constant;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
+
+import static task.utils.Constant.DB_PASSWORD;
+import static task.utils.Constant.DB_URL;
+import static task.utils.Constant.DB_USER;
 
 public class ChatApp {
 
-    public static void main(String[] args) {
+    private static final String SYSTEM_PROMPT = """
+            You are a RAG-powered assistant that assists users with their questions about microwave usage.
+            
+            ## Structure of User message:
+            **USER QUESTION** - The user's actual question.
+            **RAG CONTEXT** - Retrieved documents relevant to the query.
+            
+            ## Instructions:
+            - Use information from **RAG CONTEXT** as context when answering the **USER QUESTION**.
+            - Cite specific sources when using information from the context.
+            - Answer ONLY based on conversation history and RAG context.
+            - If no relevant information exists in **RAG CONTEXT** or conversation history, state that you cannot answer the question.
+            """;
+
+    private static final String USER_PROMPT = "**USER QUESTION**: %s \n **RAG CONTEXT**: %s";
+
+    public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        OpenAIClient client = new OpenAIClient(
-                Model.GPT_4o,
-                Constant.API_KEY,
-                List.of(
-                        generateMathToolDescription(),
-                        generateNasaToolStealerDescription(),
-                        haikuQueryToolDescription(),
-                        searchToolDescription()
-                )
+        // todo: initiate it with:
+        //  - gpt4o ChatCompletionModel
+        //  - api key from Constant
+        //  - `printRequestResponse` is up to you
+        OpenAIChatCompletionClient chatCompletionClient = null;
+
+        // todo: initiate it with:
+        //  - SMALL EmbeddingsModel
+        //  - api key from Constant
+        //  - `printResponse` is up to you
+        OpenAIEmbeddingsClient embeddingsClient = null;
+
+        TextProcessor textProcessor = new TextProcessor(
+                embeddingsClient,
+                DB_URL,
+                DB_USER,
+                DB_PASSWORD
         );
 
-        Conversation conversation = new Conversation();
-        conversation.addMessage(new Message(Role.SYSTEM, Constant.DEFAULT_SYSTEM_PROMPT));
+        System.out.println("Add new data and embeddings to the database? (y/n)");
+        String addNewEmbeddings = scanner.nextLine();
+        if (addNewEmbeddings.equalsIgnoreCase("y") || addNewEmbeddings.equalsIgnoreCase("yes")) {
+            textProcessor.processTextFile(
+                    "files/microwave_manual.txt",
+                    200,
+                    25,
+                    true,
+                    true
+            );
+            System.out.println("----------\n New data and embeddings successfully added to the database!\n");
+        }
 
+
+        Conversation conversation = new Conversation();
+        conversation.addMessage(new Message(Role.SYSTEM, SYSTEM_PROMPT));
 
         System.out.println("Type your question or 'exit' to quit.");
         while (true) {
@@ -41,10 +85,23 @@ public class ChatApp {
                 break;
             }
 
-            conversation.addMessage(new Message(Role.USER, userInput));
-
             try {
-                Message aiMessage = client.responseWithMessage(conversation.getMessages());
+                // Search the most relevant context to user request in Vector DB
+                // TODO: use text processor for search (semantic or similarity):
+                // TODO: - play with `topK` to check the amount of returned results
+                // TODO: - play with `minScore` to check the amount of returned results and their `similarity_score`
+                List<String> ragContextChunks = null;
+
+                userInput = String.format(
+                        USER_PROMPT,
+                        userInput,
+                        String.join(", ", Objects.requireNonNull(ragContextChunks, "ragContextChunks cannot be null"))
+                );
+
+
+                conversation.addMessage(new Message(Role.USER, userInput));
+
+                Message aiMessage = chatCompletionClient.responseWithMessage(conversation.getMessages());
                 conversation.addMessage(aiMessage);
                 System.out.println("AI: " + aiMessage.getContent());
             } catch (Exception e) {
@@ -57,201 +114,4 @@ public class ChatApp {
         scanner.close();
     }
 
-    /**
-     * <pre>
-     * {
-     *   "type": "function",
-     *   "function": {
-     *     "name": "simple_calculator",
-     *     "description": "Provides results of the basic math calculations.",
-     *     "parameters": {
-     *       "type": "object",
-     *       "properties": {
-     *         "num1": {
-     *           "type": "number",
-     *           "description": "First operand."
-     *         },
-     *         "num2": {
-     *           "type": "number",
-     *           "description": "Second operand."
-     *         },
-     *         "operation": {
-     *           "type": "string",
-     *           "description": "Operation that should be performed",
-     *           "enum": ["add", "subtract", "multiply", "divide"]
-     *         }
-     *       },
-     *       "required": ["num1", "num2", "operation"],
-     *       "additionalProperties": false
-     *     },
-     *     "strict": true
-     *   }
-     * }
-     * </pre>
-     */
-    private static Map<String, Object> generateMathToolDescription() {
-        return Map.of(
-                "type", "function",
-                "function", Map.of(
-                        "name", Constant.SIMPLE_CALCULATOR,
-                        "description", "Provides results of the basic math calculations.",
-                        "parameters", Map.of(
-                                "type", "object",
-                                "properties", Map.of(
-                                        "num1", Map.of(
-                                                "type", "number",
-                                                "description", "First operand."
-                                        ),
-                                        "num2", Map.of(
-                                                "type", "number",
-                                                "description", "Second operand."
-                                        ),
-                                        "operation", Map.of(
-                                                "type", "string",
-                                                "description", "Operation that should be performed",
-                                                "enum", List.of("add", "subtract", "multiply", "divide")
-                                        )
-                                ),
-                                "required", List.of("num1", "num2", "operation"),
-                                "additionalProperties", false
-                        ),
-                        "strict", true
-                )
-        );
-    }
-
-    /**
-     * <pre>
-     * {
-     *   "type": "function",
-     *   "function": {
-     *     "name": "nasa_image_stealer",
-     *     "description": "This tool provides description of the largest NASA image by Mars sol.",
-     *     "parameters": {
-     *       "type": "object",
-     *       "properties": {
-     *         "sol": {
-     *           "type": "integer",
-     *           "description": "Sol of Mars."
-     *         }
-     *       },
-     *       "required": ["sol"],
-     *       "additionalProperties": false
-     *     },
-     *     "strict": true
-     *   }
-     * }
-     * </pre>
-     */
-    private static Map<String, Object> generateNasaToolStealerDescription() {
-        return Map.of(
-                "type", "function",
-                "function", Map.of(
-                        "name", Constant.NASA_IMG_STEALER,
-                        "description", "This tool provides description of the largest NASA image by Mars sol.",
-                        "parameters", Map.of(
-                                "type", "object",
-                                "properties", Map.of(
-                                        "sol", Map.of(
-                                                "type", "integer",
-                                                "description", "Sol of Mars."
-                                        )
-                                ),
-                                "required", List.of("sol"),
-                                "additionalProperties", false
-                        ),
-                        "strict", true
-                )
-        );
-    }
-
-    /**
-     * <pre>
-     * {
-     *   "type": "function",
-     *   "function": {
-     *     "name": "nasa_image_stealer",
-     *     "description": "Special tool that super experienced in Haiku generation on the Ukrainian language.",
-     *     "parameters": {
-     *       "type": "object",
-     *       "properties": {
-     *         "query": {
-     *           "type": "string",
-     *           "description": "Description of Haiku that should be generated"
-     *         }
-     *       },
-     *       "required": ["query"],
-     *       "additionalProperties": false
-     *     },
-     *     "strict": true
-     *   }
-     * }
-     * </pre>
-     */
-    private static Map<String, Object> haikuQueryToolDescription() {
-        return Map.of(
-                "type", "function",
-                "function", Map.of(
-                        "name", Constant.HAIKU_GENERATOR,
-                        "description", "Special tool that super experienced in Haiku generation on the Ukrainian language.",
-                        "parameters", Map.of(
-                                "type", "object",
-                                "properties", Map.of(
-                                        "query", Map.of(
-                                                "type", "string",
-                                                "description", "Description of Haiku that should be generated"
-                                        )
-                                ),
-                                "required", List.of("query"),
-                                "additionalProperties", false
-                        ),
-                        "strict", true
-                )
-        );
-    }
-
-    /**
-     * <pre>
-     * {
-     *   "type": "function",
-     *   "function": {
-     *     "name": "web_search_tool",
-     *     "description": "Tool for WEB searching",
-     *     "parameters": {
-     *       "type": "object",
-     *       "properties": {
-     *         "request": {
-     *           "type": "string",
-     *           "description": "Search request"
-     *         }
-     *       },
-     *       "required": ["request"],
-     *       "additionalProperties": false
-     *     },
-     *     "strict": true
-     *   }
-     * }
-     * </pre>
-     */
-    private static Map<String, Object> searchToolDescription() {
-        return Map.of(
-                "type", "function",
-                "function", Map.of(
-                        "name", Constant.WEB_SEARCH,
-                        "description", "Tool for WEB searching.",
-                        "parameters", Map.of(
-                                "type", "object",
-                                "properties", Map.of(
-                                        "request", Map.of(
-                                                "type", "string",
-                                                "description", "Search request."
-                                        )
-                                ),
-                                "required", List.of("request"),
-                                "additionalProperties", false
-                        ),
-                        "strict", true
-                )
-        );
-    }
 }

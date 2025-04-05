@@ -1,4 +1,4 @@
-package task.dto;
+package task.dto.chat_completion;
 
 import lombok.Getter;
 

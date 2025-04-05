@@ -1,4 +1,4 @@
-package task.dto;
+package task.dto.chat_completion;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,10 +24,6 @@ public class Message {
     private String name;
 
     private String content;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("tool_calls")
-    private List<ToolCall> toolCalls;
 
     public Message(Role role, String content) {
         this.role = role;

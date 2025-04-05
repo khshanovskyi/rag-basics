@@ -1,4 +1,9 @@
 package task.dto.embeddings;
 
-public class EmbeddingsResponseDto {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record EmbeddingsResponseDto (List<EmbeddingData> data, String model){
 }

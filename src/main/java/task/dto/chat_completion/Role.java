@@ -1,4 +1,4 @@
-package task.dto;
+package task.dto.chat_completion;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

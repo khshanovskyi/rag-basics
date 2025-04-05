@@ -1,29 +1,28 @@
-package task;
+package task.clients;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import task.dto.chat_completion.ChatCompletion;
-import task.dto.chat_completion.Choice;
 import task.dto.embeddings.EmbeddingsModel;
-import task.dto.chat_completion.Message;
 import task.dto.embeddings.EmbeddingsResponseDto;
 import task.utils.Constant;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 import java.util.Map;
 
 public class OpenAIEmbeddingsClient {
+
     private final ObjectMapper mapper;
     private final HttpClient httpClient;
     private final EmbeddingsModel model;
     private final String apiKey;
+    private final boolean printResponse;
 
-    public OpenAIEmbeddingsClient(EmbeddingsModel model, String apiKey) {
+    public OpenAIEmbeddingsClient(EmbeddingsModel model, String apiKey, boolean printResponse) {
         this.model = model;
         this.apiKey = checkApiKey(apiKey);
+        this.printResponse = printResponse;
         this.mapper = new ObjectMapper();
         this.httpClient = HttpClient.newHttpClient();
     }
@@ -36,30 +35,32 @@ public class OpenAIEmbeddingsClient {
     }
 
     public EmbeddingsResponseDto getEmbeddings(String input) throws Exception {
-        var request = createRequest(input);
-        HttpRequest httpRequest = generateRequest(request);
+        //todo: 1. Create request by calling `generateRequestBody(String input)`
+        //todo: 2. Generate HttpRequest using `generateRequest(Map<String, Object> request)`
+        //todo: 3. Send HTTP request and get response body (use `HttpResponse.BodyHandlers.ofString()`)
+        //todo: 4. If `printResponse` is true, print the response to console (use `mapper.writerWithDefaultPrettyPrinter()`)
+        //todo: 5. Parse the responseBody into EmbeddingsResponseDto using the ObjectMapper
+        //todo: 6. Return the parsed response
 
-        String responseBody = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        System.out.println("RESPONSE: " + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(responseBody)));
-
-        EmbeddingsResponseDto embeddingsResponse = mapper.readValue(responseBody, EmbeddingsResponseDto.class);
-
-        return embeddingsResponse;
+        throw new RuntimeException("Not implemented");
     }
 
-    private Map<String, Object> createRequest(String input) {
-        return Map.of(
-                "model", this.model.getValue(),
-                "input", input
-        );
+    private Map<String, Object> generateRequestBody(String input) {
+        //todo: Create and return a Map with parameters:
+        //todo:     - "model": the model value from the class field
+        //todo:     - "input": the input text parameter
+
+        throw new RuntimeException("Not implemented");
     }
 
     private HttpRequest generateRequest(Map<String, Object> requestBody) throws JsonProcessingException {
-        return HttpRequest.newBuilder()
-                .uri(Constant.OPEN_AI_EMBEDDINGS_API_URI)
-                .header("Authorization", "Bearer " + apiKey)
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(requestBody)))
-                .build();
+        //todo: Build an HttpRequest that:
+        //todo:     - Uses the OpenAI Embeddings API URI from Constants
+        //todo:     - Adds Authorization header with the API key in format "Bearer {apiKey}"
+        //todo:     - Sets Content-Type to "application/json"
+        //todo:     - Creates a POST request with requestBody converted to JSON string
+        //todo:     - Returns the built request
+
+        throw new RuntimeException("Not implemented");
     }
 }
