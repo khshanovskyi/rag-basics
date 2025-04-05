@@ -44,7 +44,7 @@ What should you do if food in plastic or paper containers starts smoking during 
 What is the recommended procedure for removing odors from the microwave oven?
 ```
 
-## Valid request samples:
+## Invalid request samples:
 ```
 What do you know about the Codeus community?
 ```
