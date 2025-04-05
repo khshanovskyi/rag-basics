@@ -24,7 +24,7 @@ public class OpenAIEmbeddingsClient {
         this.apiKey = checkApiKey(apiKey);
         this.printResponse = printResponse;
         this.mapper = new ObjectMapper();
-        this.httpClient = HttpClient.newHttpClient();
+        this.httpClient = createHttpClient();
     }
 
     private String checkApiKey(String apiKey) {
@@ -32,6 +32,10 @@ public class OpenAIEmbeddingsClient {
             throw new IllegalArgumentException("apiKey cannot be null or empty");
         }
         return apiKey;
+    }
+
+    protected HttpClient createHttpClient() {
+        return HttpClient.newHttpClient();
     }
 
     public EmbeddingsResponseDto getEmbeddings(String input) throws Exception {
@@ -46,14 +50,14 @@ public class OpenAIEmbeddingsClient {
         return mapper.readValue(responseBody, EmbeddingsResponseDto.class);
     }
 
-    private Map<String, Object> generateRequestBody(String input) {
+    protected Map<String, Object> generateRequestBody(String input) {
         return Map.of(
                 "model", this.model.getValue(),
                 "input", input
         );
     }
 
-    private HttpRequest generateRequest(Map<String, Object> requestBody) throws JsonProcessingException {
+    protected HttpRequest generateRequest(Map<String, Object> requestBody) throws JsonProcessingException {
         return HttpRequest.newBuilder()
                 .uri(Constant.OPEN_AI_EMBEDDINGS_API_URI)
                 .header("Authorization", "Bearer " + apiKey)

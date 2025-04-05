@@ -40,7 +40,7 @@ public class TextProcessor {
         this.dbPassword = dbPassword;
     }
 
-    private Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
@@ -75,14 +75,14 @@ public class TextProcessor {
         });
     }
 
-    private String getContent(String fileName) throws IOException {
+    protected String getContent(String fileName) throws IOException {
         ClassLoader classLoader = TextProcessor.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         String filePath = resource.getPath();
         return Files.readString(Path.of(filePath));
     }
 
-    private void process(String documentName, String chunk) {
+    protected void process(String documentName, String chunk) {
         try {
             EmbeddingsResponseDto embeddings = embeddingsClient.getEmbeddings(chunk);
             List<Double> embeddingVector = embeddings.data().getFirst().embedding();
@@ -93,7 +93,7 @@ public class TextProcessor {
         }
     }
 
-    private void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
+    protected void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
         String vectorString = embeddingListToString(embeddingVector);
 
         try (Connection conn = getConnection();
@@ -109,7 +109,7 @@ public class TextProcessor {
         System.out.printf("Stored chunk '%s' from document: %s\n%n", chunk, documentName);
     }
 
-    public List<String> chunkText(String text, int chunkSize, int overlap) {
+    private List<String> chunkText(String text, int chunkSize, int overlap) {
         List<String> chunks = new ArrayList<>();
 
         if (text == null || text.isEmpty()) {
@@ -138,7 +138,7 @@ public class TextProcessor {
         return chunks;
     }
 
-    private void trunkateTable() throws SQLException {
+    protected void trunkateTable() throws SQLException {
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "TRUNCATE TABLE items")) {
@@ -148,7 +148,7 @@ public class TextProcessor {
         }
     }
 
-    private String embeddingListToString(List<Double> embedding) {
+    protected String embeddingListToString(List<Double> embedding) {
         String embeddings = embedding.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
@@ -180,7 +180,7 @@ public class TextProcessor {
         return search(SearchMode.SEMANTIC, userRequest, topK, minScore);
     }
 
-    private List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
+    protected List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
         if (topK < 1) throw new IllegalArgumentException("topK must be at least 1");
         if (minScore < 0 || minScore > 1) throw new IllegalArgumentException("minScore must be in [0.0..., 0.99...] diapasons");
 
@@ -234,7 +234,7 @@ public class TextProcessor {
         - A distance of 0 (identical vectors) becomes a similarity score of 1 (100% similar)
         - A distance of 2 (completely opposite vectors) becomes a similarity score of 0 (0% similar)
     */
-    private String generateSearchQuery(SearchMode searchMode) {
+    protected String generateSearchQuery(SearchMode searchMode) {
         return switch (searchMode) {
             case SIMILARITY ->
                     """
@@ -253,7 +253,7 @@ public class TextProcessor {
         };
     }
 
-    enum SearchMode {
+    protected enum SearchMode {
         SIMILARITY, // Euclidean distance (<->)
         SEMANTIC, // Cosine distance (<=>)
     }

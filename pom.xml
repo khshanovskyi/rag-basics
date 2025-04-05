@@ -24,6 +24,48 @@
     <artifactId>postgresql</artifactId>
     <version>42.7.5</version>
   </dependency>
+
+  <!-- JUnit 5 -->
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>5.12.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <version>5.12.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-params</artifactId>
+    <version>5.12.1</version>
+    <scope>test</scope>
+  </dependency>
+
+  <!-- Mockito for mocking -->
+  <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+    <version>5.16.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-junit-jupiter</artifactId>
+    <version>5.16.1</version>
+    <scope>test</scope>
+  </dependency>
+
+  <!-- AssertJ for fluent assertions (optional but recommended) -->
+  <dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.27.3</version>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
 
 <build>
