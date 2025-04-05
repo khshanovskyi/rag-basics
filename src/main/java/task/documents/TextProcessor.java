@@ -164,7 +164,7 @@ public class TextProcessor {
      * @return chunks of most suitable data to user input
      */
     public List<String> semanticSearch(String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Call the search method with SearchMode.SEMANTICS parameter
+        //todo: 1. Call the search method with SearchMode.SEMANTIC parameter
         //todo: 2. Return the result of the method `search`. (Need to implement*)
 
         throw new RuntimeException("Not implemented");
@@ -219,7 +219,7 @@ public class TextProcessor {
         //todo:    - Filters by minimum similarity score threshold
         //todo:    - Orders results by similarity score in descending order
         //todo:    - Limits to the specified number of results
-        //todo: 3. For SearchMode.SEMANTICS, return SQL query that:
+        //todo: 3. For SearchMode.SEMANTIC, return SQL query that:
         //todo:    - All the same as query above but use the cosine distance operator (<=>)
         //todo: 4. Include necessary vector casting (?::vector) in the queries
 
@@ -228,7 +228,7 @@ public class TextProcessor {
 
     enum SearchMode {
         SIMILARITY, // Euclidean distance (<->)
-        SEMANTICS, // Cosine distance (<=>)
+        SEMANTIC, // Cosine distance (<=>)
     }
 
 }
