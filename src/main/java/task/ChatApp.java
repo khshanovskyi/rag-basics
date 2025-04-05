@@ -39,17 +39,17 @@ public class ChatApp {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        // todo: initiate it with:
-        //  - gpt4o ChatCompletionModel
-        //  - api key from Constant
-        //  - `printRequestResponse` is up to you
-        OpenAIChatCompletionClient chatCompletionClient = null;
+        OpenAIChatCompletionClient chatCompletionClient = new OpenAIChatCompletionClient(
+                ChatCompletionModel.GPT_4o,
+                Constant.OPEN_AI_API_KEY,
+                false
+        );
 
-        // todo: initiate it with:
-        //  - SMALL EmbeddingsModel
-        //  - api key from Constant
-        //  - `printResponse` is up to you
-        OpenAIEmbeddingsClient embeddingsClient = null;
+        OpenAIEmbeddingsClient embeddingsClient = new OpenAIEmbeddingsClient(
+                EmbeddingsModel.OI_TEXT_EMBEDDINGS_3_SMALL,
+                Constant.OPEN_AI_API_KEY,
+                false
+        );
 
         TextProcessor textProcessor = new TextProcessor(
                 embeddingsClient,
@@ -87,10 +87,7 @@ public class ChatApp {
 
             try {
                 // Search the most relevant context to user request in Vector DB
-                // TODO: use text processor for search (semantic or similarity):
-                // TODO: - play with `topK` to check the amount of returned results
-                // TODO: - play with `minScore` to check the amount of returned results and their `similarity_score`
-                List<String> ragContextChunks = null;
+                List<String> ragContextChunks = textProcessor.similaritySearch(userInput, 3, 0f);
 
                 userInput = String.format(
                         USER_PROMPT,

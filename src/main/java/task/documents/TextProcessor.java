@@ -54,15 +54,25 @@ public class TextProcessor {
      * @param runParallel whether save chunks in parallel or not
      */
     public void processTextFile(String fileName, int chunkSize, int overlap, boolean truncateTable, boolean runParallel) throws Exception {
-        //todo: 1. Validate parameters (chunkSize >= 10, overlap >= 0, overlap < chunkSize), otherwise IllegalArgumentException
-        //todo: 2. Read the text content from the file using `getContent(fileName)`. (Implemented)
-        //todo: 3. Split the content into chunks using `chunkText(content, chunkSize, overlap)`. (Implemented)
-        //todo: 4. Log information about processing (document name, total chunks)
-        //todo: 5. Create a stream of chunks (parallel if runParallel is true)
-        //todo: 6. If truncateTable is true, call `truncateTable()` to clear the table. (Implemented)
-        //todo: 7. Process each chunk by calling `process(fileName, chunk)`. (Need to implement*)
+        if (chunkSize < 10) throw new IllegalArgumentException("chunkSize must be at least 10");
+        if (overlap < 0) throw new IllegalArgumentException("overlap must be at least 0");
+        if (overlap >= chunkSize) throw new IllegalArgumentException("overlap should be lower than chunkSize");
 
-        throw new RuntimeException("Not implemented");
+        String content = getContent(fileName);
+        List<String> chunks = chunkText(content, chunkSize, overlap);
+
+        System.out.println("Processing document: " + fileName);
+        System.out.println("Total chunks: " + chunks.size());
+
+        Stream<String> chunksStream = runParallel ? chunks.parallelStream() : chunks.stream();
+
+        if (truncateTable){
+            trunkateTable();
+        }
+
+        chunksStream.forEach(chunk -> {
+            process(fileName, chunk);
+        });
     }
 
     private String getContent(String fileName) throws IOException {
@@ -73,24 +83,30 @@ public class TextProcessor {
     }
 
     private void process(String documentName, String chunk) {
-        //todo: 1. Get embeddings for the chunk using `embeddingsClient.getEmbeddings(chunk)`
-        //todo: 2. Extract the embedding vector from the response
-        //todo: 3. Save the chunk and its embeddings to the database using `saveChunk(embeddingVector, chunk, documentName)`. (Need to implement*)
-        //todo: 4. Handle any exceptions by wrapping them in RuntimeException
+        try {
+            EmbeddingsResponseDto embeddings = embeddingsClient.getEmbeddings(chunk);
+            List<Double> embeddingVector = embeddings.data().getFirst().embedding();
 
-        throw new RuntimeException("Not implemented");
+            saveChunk(embeddingVector, chunk, documentName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void saveChunk(List<Double> embeddingVector, String chunk, String documentName) throws Exception {
-        //todo: 1. Convert the embedding vector list to a string using `embeddingListToString(embeddingVector)`. (Implemented)
-        //todo: 2. Create a database connection
-        //todo: 3. Prepare an SQL statement to insert document_name, text, and embedding into items table
-        //todo: 4. Set parameters for the prepared statement (documentName, chunk, vectorString)
-        //todo: 5. Execute the update
-        //todo: 6. Print information about the stored chunk
-        //todo: 7. Close the connection and statement properly
+        String vectorString = embeddingListToString(embeddingVector);
 
-        throw new RuntimeException("Not implemented");
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "INSERT INTO items (document_name, text, embedding) VALUES (?, ?, ?::vector)")) {
+
+            ps.setString(1, documentName);
+            ps.setString(2, chunk);
+            ps.setString(3, vectorString);
+            ps.executeUpdate();
+        }
+
+        System.out.printf("Stored chunk '%s' from document: %s\n%n", chunk, documentName);
     }
 
     public List<String> chunkText(String text, int chunkSize, int overlap) {
@@ -149,10 +165,7 @@ public class TextProcessor {
      * @return chunks of most suitable data to user input
      */
     public List<String> similaritySearch(String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Call the search method with SearchMode.SIMILARITY parameter
-        //todo: 2. Return the result of the method `search`. (Need to implement*)
-
-        throw new RuntimeException("Not implemented");
+        return search(SearchMode.SIMILARITY, userRequest, topK, minScore);
     }
 
     /**
@@ -164,27 +177,38 @@ public class TextProcessor {
      * @return chunks of most suitable data to user input
      */
     public List<String> semanticSearch(String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Call the search method with SearchMode.SEMANTIC parameter
-        //todo: 2. Return the result of the method `search`. (Need to implement*)
-
-        throw new RuntimeException("Not implemented");
+        return search(SearchMode.SEMANTIC, userRequest, topK, minScore);
     }
 
     private List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Validate parameters (topK >= 1, minScore between 0 and 1), otherwise IllegalArgumentException
-        //todo: 2. Get embeddings for the user request using `embeddingsClient.getEmbeddings(userRequest)`
-        //todo: 3. Extract the embedding vector from the response
-        //todo: 4. Convert the embedding vector to string format using `embeddingListToString(embeddingVector)`. (Implemented)
-        //todo: 5. Initialize a list to store retrieved chunks (results)
-        //todo: 6. Generate the appropriate search query based on searchMode using `generateSearchQuery(searchMode)`. (Need to implement*)
-        //todo: 7. Create a database connection and prepare the SQL statement
-        //todo: 8. Set parameters for the statement (vectorString, vectorString, minScore, topK)
-        //todo: 9. Execute the query and process the results, adding text to retrievedChunks
-        //todo: 10. Log information about the retrieved chunks (optional)
-        //todo: 11. Close the connection and statement properly
-        //todo: 12. Return the list of retrieved chunks
+        if (topK < 1) throw new IllegalArgumentException("topK must be at least 1");
+        if (minScore < 0 || minScore > 1) throw new IllegalArgumentException("minScore must be in [0.0..., 0.99...] diapasons");
 
-        throw new RuntimeException("Not implemented");
+        EmbeddingsResponseDto queryEmbedding = embeddingsClient.getEmbeddings(userRequest);
+        List<Double> embeddingVector = queryEmbedding.data().getFirst().embedding();
+        String vectorString = embeddingListToString(embeddingVector);
+
+        List<String> retrievedChunks = new ArrayList<>();
+
+        String searchQuery = generateSearchQuery(searchMode);
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(searchQuery)) {
+
+            ps.setString(1, vectorString);
+            ps.setString(2, vectorString);
+            ps.setFloat(3, minScore);
+            ps.setInt(4, topK);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    System.out.println(rs.getString("text") + " " + rs.getString("similarity_score"));
+                    retrievedChunks.add(rs.getString("text"));
+                }
+                System.out.println();
+            }
+        }
+
+        return retrievedChunks;
     }
 
     /*
@@ -211,19 +235,22 @@ public class TextProcessor {
         - A distance of 2 (completely opposite vectors) becomes a similarity score of 0 (0% similar)
     */
     private String generateSearchQuery(SearchMode searchMode) {
-        //todo: 1. Implement a switch statement based on the searchMode parameter
-        //todo: 2. For SearchMode.SIMILARITY, return SQL query that:
-        //todo:    - Selects `tex`t and calculates `similarity_score` using the L2 distance operator (<->)
-        //todo:    - Transforms distance to similarity with formula: 1 - (distance) / 2
-        //todo:      (Division by 2 normalizes the score to 0-1 range since L2 distances can be up to 2 for normalized vectors)
-        //todo:    - Filters by minimum similarity score threshold
-        //todo:    - Orders results by similarity score in descending order
-        //todo:    - Limits to the specified number of results
-        //todo: 3. For SearchMode.SEMANTIC, return SQL query that:
-        //todo:    - All the same as query above but use the cosine distance operator (<=>)
-        //todo: 4. Include necessary vector casting (?::vector) in the queries
-
-        throw new RuntimeException("Not implemented");
+        return switch (searchMode) {
+            case SIMILARITY ->
+                    """
+                    SELECT text, 1 - (embedding <-> ?::vector) / 2 AS similarity_score
+                    FROM items
+                    WHERE 1 - (embedding <-> ?::vector) / 2 >= ?
+                    ORDER BY similarity_score DESC LIMIT ?
+                    """;
+            case SEMANTIC ->
+                    """
+                    SELECT text, 1 - (embedding <=> ?::vector) / 2 AS similarity_score
+                    FROM items
+                    WHERE 1 - (embedding <=> ?::vector) / 2 >= ?
+                    ORDER BY similarity_score DESC LIMIT ?
+                    """;
+        };
     }
 
     enum SearchMode {
