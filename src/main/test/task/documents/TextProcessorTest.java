@@ -283,14 +283,14 @@ class TextProcessorTest {
     }
 
     @Test
-    void generateSearchQuery_forSimilarityMode_returnsCorrectQuery() {
-        String query = textProcessor.generateSearchQuery(SearchMode.SIMILARITY);
+    void generateSearchQuery_forSimilarityEMode_returnsCorrectQuery() {
+        String query = textProcessor.generateSearchQuery(SearchMode.SIMILARITY_E);
         assertTrue(query.contains("embedding <-> ?::vector"));
     }
 
     @Test
-    void generateSearchQuery_forSemanticMode_returnsCorrectQuery() {
-        String query = textProcessor.generateSearchQuery(SearchMode.SEMANTIC);
+    void generateSearchQuery_forSemanticCMode_returnsCorrectQuery() {
+        String query = textProcessor.generateSearchQuery(SearchMode.SIMILARITY_C);
         assertTrue(query.contains("embedding <=> ?::vector"));
     }
 
