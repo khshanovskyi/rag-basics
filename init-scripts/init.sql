@@ -21,7 +21,7 @@ CREATE INDEX idx_items_embedding_l2 ON items USING ivfflat (embedding vector_l2_
 -- Create an index for similarity search using Cosine similarity
 -- Uses IVF-Flat algorithm for approximate nearest neighbor search
 -- The 'vector_cosine_ops' operator class optimizes for the '<=>' operator (Cosine distance)
--- This index is important for semantic search where angle between vectors matters more than distance
+-- This index is important for similarity search where angle between vectors matters more than distance
 CREATE INDEX idx_items_embedding_cosine ON items USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 
 -- Grant database access permissions to the postgres user

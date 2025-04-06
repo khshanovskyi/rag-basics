@@ -289,7 +289,7 @@ class TextProcessorTest {
     }
 
     @Test
-    void generateSearchQuery_forSemanticCMode_returnsCorrectQuery() {
+    void generateSearchQuery_forSimilarityCMode_returnsCorrectQuery() {
         String query = textProcessor.generateSearchQuery(SearchMode.SIMILARITY_C);
         assertTrue(query.contains("embedding <=> ?::vector"));
     }

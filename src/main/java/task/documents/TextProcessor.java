@@ -139,7 +139,7 @@ public class TextProcessor {
 
 
     /**
-     * Makes similarity search of data chunks by user input.
+     * Makes similarity search of data chunks by user input with Cosine distance.
      *
      * @param userRequest original user input
      * @param topK amount of results to return after search
@@ -147,14 +147,14 @@ public class TextProcessor {
      * @return chunks of most suitable data to user input
      */
     public List<String> similarityEuclideanSearch(String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Call the search method with SearchMode.SIMILARITY parameter
+        //todo: 1. Call the search method with SearchMode.SIMILARITY_E parameter
         //todo: 2. Return the result of the method `search`. (Need to implement*)
 
         throw new RuntimeException("Not implemented");
     }
 
     /**
-     * Makes semantic search of data chunks by user input.
+     * Makes similarity search of data chunks by user input with Euclidean distance.
      *
      * @param userRequest original user input
      * @param topK amount of results to return after search
@@ -162,7 +162,7 @@ public class TextProcessor {
      * @return chunks of most suitable data to user input
      */
     public List<String> similarityCosineSearch(String userRequest, int topK, float minScore) throws Exception {
-        //todo: 1. Call the search method with SearchMode.SEMANTIC parameter
+        //todo: 1. Call the search method with SearchMode.SIMILARITY_C parameter
         //todo: 2. Return the result of the method `search`. (Need to implement*)
 
         throw new RuntimeException("Not implemented");
