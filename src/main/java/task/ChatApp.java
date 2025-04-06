@@ -87,7 +87,7 @@ public class ChatApp {
 
             try {
                 // Search the most relevant context to user request in Vector DB
-                // TODO: use text processor for search (semantic or similarity):
+                // TODO: use text processor for search:
                 // TODO: - play with `topK` to check the amount of returned results
                 // TODO: - play with `minScore` to check the amount of returned results and their `similarity_score`
                 List<String> ragContextChunks = null;

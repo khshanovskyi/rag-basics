@@ -10,12 +10,10 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A processor for text documents that handles chunking, embedding, storing, and retrieval.
@@ -148,7 +146,7 @@ public class TextProcessor {
      * @param minScore [0f - 0.99999999f], filter with similarity score
      * @return chunks of most suitable data to user input
      */
-    public List<String> similaritySearch(String userRequest, int topK, float minScore) throws Exception {
+    public List<String> similarityEuclideanSearch(String userRequest, int topK, float minScore) throws Exception {
         //todo: 1. Call the search method with SearchMode.SIMILARITY parameter
         //todo: 2. Return the result of the method `search`. (Need to implement*)
 
@@ -163,7 +161,7 @@ public class TextProcessor {
      * @param minScore [0f - 0.99999999f], filter with similarity score
      * @return chunks of most suitable data to user input
      */
-    public List<String> semanticSearch(String userRequest, int topK, float minScore) throws Exception {
+    public List<String> similarityCosineSearch(String userRequest, int topK, float minScore) throws Exception {
         //todo: 1. Call the search method with SearchMode.SEMANTIC parameter
         //todo: 2. Return the result of the method `search`. (Need to implement*)
 
@@ -212,14 +210,14 @@ public class TextProcessor {
     */
     protected String generateSearchQuery(SearchMode searchMode) {
         //todo: 1. Implement a switch statement based on the searchMode parameter
-        //todo: 2. For SearchMode.SIMILARITY, return SQL query that:
+        //todo: 2. For SearchMode.SIMILARITY_E, return SQL query that:
         //todo:    - Selects `tex`t and calculates `similarity_score` using the L2 distance operator (<->)
         //todo:    - Transforms distance to similarity with formula: 1 - (distance) / 2
         //todo:      (Division by 2 normalizes the score to 0-1 range since L2 distances can be up to 2 for normalized vectors)
         //todo:    - Filters by minimum similarity score threshold
         //todo:    - Orders results by similarity score in descending order
         //todo:    - Limits to the specified number of results
-        //todo: 3. For SearchMode.SEMANTIC, return SQL query that:
+        //todo: 3. For SearchMode.SIMILARITY_C, return SQL query that:
         //todo:    - All the same as query above but use the cosine distance operator (<=>)
         //todo: 4. Include necessary vector casting (?::vector) in the queries
 
@@ -227,8 +225,8 @@ public class TextProcessor {
     }
 
     protected enum SearchMode {
-        SIMILARITY, // Euclidean distance (<->)
-        SEMANTIC, // Cosine distance (<=>)
+        SIMILARITY_E, // Euclidean distance (<->)
+        SIMILARITY_C, // Cosine distance (<=>)
     }
 
 }

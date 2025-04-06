@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -191,7 +190,7 @@ class TextProcessorTest {
     }
 
     @Test
-    void similaritySearch_basicBehaviorTest() throws Exception {
+    void similarityEuclideanSearch_basicBehaviorTest() throws Exception {
         // 1. Setup embedding response
         List<Double> mockEmbedding = Arrays.asList(0.1, 0.2, 0.3);
         EmbeddingData embeddingData = new EmbeddingData("embedding", 0, mockEmbedding);
@@ -208,7 +207,7 @@ class TextProcessorTest {
         when(mockResultSet.getString("similarity_score")).thenReturn("0.95", "0.85");
 
         // 4. Call the method
-        List<String> results = textProcessor.similaritySearch("any query", 5, 0.5f);
+        List<String> results = textProcessor.similarityEuclideanSearch("any query", 5, 0.5f);
 
         // 5. Only verify that we got the expected number of results
         assertEquals(2, results.size());
@@ -226,7 +225,7 @@ class TextProcessorTest {
     }
 
     @Test
-    void semanticSearch_basicBehaviorTest() throws Exception {
+    void similarityCosineSearch_basicBehaviorTest() throws Exception {
         // 1. Setup embedding response
         List<Double> mockEmbedding = Arrays.asList(0.1, 0.2, 0.3);
         EmbeddingData embeddingData = new EmbeddingData("embedding", 0, mockEmbedding);
@@ -243,7 +242,7 @@ class TextProcessorTest {
         when(mockResultSet.getString("similarity_score")).thenReturn("0.95", "0.85", "0.75");
 
         // 4. Call the method
-        List<String> results = textProcessor.semanticSearch("any query", 5, 0.5f);
+        List<String> results = textProcessor.similarityCosineSearch("any query", 5, 0.5f);
 
         // 5. Only verify that we got the expected number of results
         assertEquals(3, results.size());
@@ -263,7 +262,7 @@ class TextProcessorTest {
     @Test
     void search_withInvalidTopK_throwsException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            textProcessor.similaritySearch("query", 0, 0.8f);
+            textProcessor.similarityEuclideanSearch("query", 0, 0.8f);
         });
 
         assertEquals("topK must be at least 1", exception.getMessage());
@@ -272,11 +271,11 @@ class TextProcessorTest {
     @Test
     void search_withInvalidMinScore_throwsException() {
         Exception exception1 = assertThrows(IllegalArgumentException.class, () -> {
-            textProcessor.similaritySearch("query", 3, -0.1f);
+            textProcessor.similarityEuclideanSearch("query", 3, -0.1f);
         });
 
         Exception exception2 = assertThrows(IllegalArgumentException.class, () -> {
-            textProcessor.similaritySearch("query", 3, 1.1f);
+            textProcessor.similarityEuclideanSearch("query", 3, 1.1f);
         });
 
         assertEquals("minScore must be in [0.0..., 0.99...] diapasons", exception1.getMessage());
