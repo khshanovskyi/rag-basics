@@ -87,7 +87,7 @@ public class ChatApp {
 
             try {
                 // Search the most relevant context to user request in Vector DB
-                List<String> ragContextChunks = textProcessor.similaritySearch(userInput, 3, 0f);
+                List<String> ragContextChunks = textProcessor.similarityCosineSearch(userInput, 3, 0f);
 
                 userInput = String.format(
                         USER_PROMPT,

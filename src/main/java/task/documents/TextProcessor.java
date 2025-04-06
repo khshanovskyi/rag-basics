@@ -157,27 +157,27 @@ public class TextProcessor {
 
 
     /**
-     * Makes similarity search of data chunks by user input.
+     * Makes similarity search of data chunks by user input with Euclidean distance.
      *
      * @param userRequest original user input
      * @param topK amount of results to return after search
      * @param minScore [0f - 0.99999999f], filter with similarity score
      * @return chunks of most suitable data to user input
      */
-    public List<String> similaritySearch(String userRequest, int topK, float minScore) throws Exception {
-        return search(SearchMode.SIMILARITY, userRequest, topK, minScore);
+    public List<String> similarityEuclideanSearch(String userRequest, int topK, float minScore) throws Exception {
+        return search(SearchMode.SIMILARITY_E, userRequest, topK, minScore);
     }
 
     /**
-     * Makes semantic search of data chunks by user input.
+     * Makes similarity search of data chunks by user input with Cosine distance.
      *
      * @param userRequest original user input
      * @param topK amount of results to return after search
      * @param minScore [0f - 0.99999999f], filter with similarity score
      * @return chunks of most suitable data to user input
      */
-    public List<String> semanticSearch(String userRequest, int topK, float minScore) throws Exception {
-        return search(SearchMode.SEMANTIC, userRequest, topK, minScore);
+    public List<String> similarityCosineSearch(String userRequest, int topK, float minScore) throws Exception {
+        return search(SearchMode.SIMILARITY_C, userRequest, topK, minScore);
     }
 
     protected List<String> search(SearchMode searchMode, String userRequest, int topK, float minScore) throws Exception {
@@ -236,14 +236,14 @@ public class TextProcessor {
     */
     protected String generateSearchQuery(SearchMode searchMode) {
         return switch (searchMode) {
-            case SIMILARITY ->
+            case SIMILARITY_E ->
                     """
                     SELECT text, 1 - (embedding <-> ?::vector) / 2 AS similarity_score
                     FROM items
                     WHERE 1 - (embedding <-> ?::vector) / 2 >= ?
                     ORDER BY similarity_score DESC LIMIT ?
                     """;
-            case SEMANTIC ->
+            case SIMILARITY_C ->
                     """
                     SELECT text, 1 - (embedding <=> ?::vector) / 2 AS similarity_score
                     FROM items
@@ -254,8 +254,8 @@ public class TextProcessor {
     }
 
     protected enum SearchMode {
-        SIMILARITY, // Euclidean distance (<->)
-        SEMANTIC, // Cosine distance (<=>)
+        SIMILARITY_E, // Euclidean distance (<->)
+        SIMILARITY_C, // Cosine distance (<=>)
     }
 
 }
