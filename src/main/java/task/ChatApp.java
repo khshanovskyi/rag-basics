@@ -34,7 +34,7 @@ public class ChatApp {
             - If no relevant information exists in **RAG CONTEXT** or conversation history, state that you cannot answer the question.
             """;
 
-    private static final String USER_PROMPT = "**USER QUESTION**: %s \n **RAG CONTEXT**: %s";
+    private static final String USER_PROMPT = "**USER QUESTION**: %s \n\n **RAG CONTEXT**: %s";
 
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
