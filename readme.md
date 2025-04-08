@@ -6,7 +6,7 @@
 2. Run [docker-compose](docker-compose.yml). It will run container with postgres + [pg vector extension](https://www.postgresql.org/about/news/pgvector-070-released-2852/) and creates the table from [this script](init-scripts/init.sql) 
 
 ## You need to implement:
-1. Add Open AI keys in [ChatApp](src/main/java/task/utils/Constant.java) class
+1. Add Open AI keys in [Constant](src/main/java/task/utils/Constant.java) class
 2. [ChatApp](src/main/java/task/ChatApp.java), implement all the flow described in `todo`
 3. [OpenAIEmbeddingsClient](src/main/java/task/clients/OpenAIEmbeddingsClient.java), implement all the flow described in `todo`
 4. [TextProcessor](src/main/java/task/documents/TextProcessor.java), implement all the flow described in `todo`
