@@ -51,3 +51,6 @@ What do you know about the Codeus community?
 ```
 What do you think about the dinosaur era? Why did they die?
 ```
+
+# RAG assessment
+Here is simple test to evaluate yourself [Google form](https://forms.gle/qQmWVkpegrMFyzPg6)
