@@ -79,7 +79,6 @@ class OpenAIEmbeddingsClientTest {
     void generateRequestBody_returnsCorrectMap() {
         Map<String, Object> requestBody = client.generateRequestBody("test input");
 
-        assertEquals(2, requestBody.size());
         assertEquals("text-embedding-3-small", requestBody.get("model"));
         assertEquals("test input", requestBody.get("input"));
     }

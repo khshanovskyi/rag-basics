@@ -51,8 +51,9 @@ public class OpenAIEmbeddingsClient {
 
     protected Map<String, Object> generateRequestBody(String input) {
         //todo: Create and return a Map with parameters:
-        //todo:     - "model": the model value from the class field
-        //todo:     - "input": the input text parameter
+        //todo:     - "model": the model value from the class field *
+        //todo:     - "input": the input text parameter *
+        //todo:     - (Optional) "dimensions": the vector dimensions size. You can play with it to evaluate the search results
 
         throw new RuntimeException("Not implemented");
     }
