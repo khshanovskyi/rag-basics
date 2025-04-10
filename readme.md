@@ -56,5 +56,5 @@ What do you think about the dinosaur era? Why did they die?
 Here is simple test to evaluate yourself [Google form](https://forms.gle/qQmWVkpegrMFyzPg6)
 
 # Useful links
-https://platform.openai.com/docs/guides/embeddings
-https://platform.openai.com/docs/api-reference/embeddings/create
+- https://platform.openai.com/docs/guides/embeddings
+- https://platform.openai.com/docs/api-reference/embeddings/create
