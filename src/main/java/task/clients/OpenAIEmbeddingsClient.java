@@ -52,8 +52,9 @@ public class OpenAIEmbeddingsClient {
 
     protected Map<String, Object> generateRequestBody(String input) {
         return Map.of(
-                "model", this.model.getValue(),
-                "input", input
+                "model", EmbeddingsModel.OI_TEXT_EMBEDDINGS_3_LARGE.getValue(),
+                "input", input,
+                "dimensions", 1536
         );
     }
 

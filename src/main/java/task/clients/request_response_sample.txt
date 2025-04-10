@@ -1,6 +1,7 @@
 REQUEST: {
   "model" : "text-embedding-3-small",
-  "input" : "I love machine learning."
+  "input" : "I love machine learning.",
+  "dimensions", 1536
 }
 
 RESPONSE: {
